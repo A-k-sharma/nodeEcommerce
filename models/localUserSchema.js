@@ -1,14 +1,23 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
+
+const environment = process.env.NODE_ENV;
+// const stage = require('./config')[environment];
+
 
 const userSchema = new Schema({
     userName:{
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     email:{
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        trim: true
+
     },
     profilePicture:{
         type: String,
@@ -24,9 +33,21 @@ const userSchema = new Schema({
         type: Date,
         required: true,
         default: Date.now()
+    },
+    password:{
+        type: String,
+        required: true,
+        default: false,
+        trim: true
+
     }
 
 
 })
+
+userSchema.pre('save', function(next){
+    this.password = bcrypt.hashSync(this.password, process.env.SALTING_ROUNDS);
+    next();
+});
 
 module.exports = mongoose.model('User',userSchema);

@@ -6,13 +6,10 @@ const cartSchema = new Schema({
         type: String,
         required: true
     },
-    products:[
-        new Schema({
-            productId:{type:String, required: true},
-            productName: {type: String, required: true},
-            quantity: {type: Number, required: true}
-        })
-    ],
+    products:{
+        type: Array,
+        default: []
+    },
     total:{
         type: Number,
         required: true

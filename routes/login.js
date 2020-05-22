@@ -13,13 +13,13 @@ route.get('/google/redirect', passport.authenticate('google', { failureRedirect:
     // Successful authentication, redirect home.
     res.send('donenene')});
 
-route.get('/facebook',passport.authenticate('facebook',{
-    scope: ['profile','email']
-}));
+// route.get('/facebook',passport.authenticate('facebook',{
+//     scope: ['profile','email']
+// }));
 
-route.get('facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/login' }),
-    function(req, res) {
-    // Successful authentication, redirect home.
-    res.send('donenene')});
+// route.get('facebook/redirect', passport.authenticate('facebook', { failureRedirect: '/login' }),
+//     function(req, res) {
+//     // Successful authentication, redirect home.
+//     res.send('donenene')});
 
 module.exports = route;

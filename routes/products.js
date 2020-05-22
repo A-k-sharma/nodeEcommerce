@@ -1,10 +1,12 @@
 const express = require('express');
 const route = express.Router();
-const productController = require('../controllers/productController')
+const productController = require('../controllers/productController');
+const tokenVerification = require('../middlewares/tokenVerification');
 
 
-route.get('/',productController.allProducts);
 
-route.post('/',productController.addProduct);
+route.get('/',tokenVerification,productController.allProducts);
+
+route.post('/',tokenVerification,productController.addProduct);
 
 module.exports = route;

@@ -24,51 +24,57 @@ module.exports={
         })
     },
     addProducts: async (req,res)=>{
-        const {productId,productName,quantity,price} = req.body.product;
+        const {productId,productName,quantity,price} = req.body;
         Cart.findOne({userEmail: req.body.userEmail})
         .then(resp=>{
-            let product= {
-                productId: productId,
-                productName: productName,
-                quantity: quantity,
-                price: price
-            };
-            let temp = resp.products;
-            let flag = false;
-
-            if(resp.products.length){
-                temp = resp.products.map(item=>{
-                    if(item.productId == productId){
-                        item.quantity = JSON.parse(item.quantity) + 1;
-                        flag= true;
-                        return item;
+            if(resp){
+                console.log(resp,'111');
+                let product= {
+                    productId: productId,
+                    productName: productName,
+                    quantity: quantity,
+                    price: price
+                };
+                let temp = resp.products;
+                let flag = false;
+                if(resp.products.length){
+                    temp = resp.products.map(item=>{
+                        if(item.productId == productId){
+                            item.quantity = JSON.parse(item.quantity) + 1;
+                            flag= true;
+                            return item;
+                        }
+                        else{
+                            return item;
+                        }
+                    })
+                    if(!flag){
+                        temp.push(product);
                     }
-                    else{
-                        return item;
-                    }
-                })
-                if(!flag){
-                    temp.push(product);
+                    let total = calculateCartTotal(temp);
+                    Cart.findOneAndUpdate({userEmail: req.body.userEmail},{ $set : {products : temp, total: total}})
+                    .then(response=>{
+                        res.send({msg:"card updated",response:response});
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })
                 }
-                let total = calculateCartTotal(temp);
-                Cart.findOneAndUpdate({userEmail: req.body.userEmail},{ $set : {products : temp, total: total}})
-                .then(response=>{
-                    res.send({msg:"card updated",response:response});
-                })
-                .catch(err=>{
-                    console.log(err);
-                })
+                else{
+                    temp.push(product);
+                    let total = calculateCartTotal(temp);
+                    Cart.findOneAndUpdate({userEmail: req.body.userEmail},{ $set : {products : temp, total: total}})
+                    .then(response=>{
+                        res.send({msg:"card updated",response:response});
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })
+                }
+                
             }
             else{
-                temp.push(product);
-                let total = calculateCartTotal(temp);
-                Cart.findOneAndUpdate({userEmail: req.body.userEmail},{ $set : {products : temp, total: total}})
-                .then(response=>{
-                    res.send({msg:"card updated",response:response});
-                })
-                .catch(err=>{
-                    console.log(err);
-                })
+                res.status(404).send('Cart Not Initialized')
             }
             
         })

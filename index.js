@@ -11,6 +11,9 @@ const mongoose =  require('mongoose');
 const passport = require('passport');
 const login = require('./routes/login')
 const passportSetup = require('./configs/passportConfig');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+
 const environment = process.env.NODE_ENV; // development
 // const stage = require('./config')[environment];
 
@@ -18,6 +21,21 @@ const environment = process.env.NODE_ENV; // development
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(cookieParser());
+app.use(cookieSession({
+    maxAge: 24*60*60*1000,
+    keys: ['thisisttnbuzzz'],
+    cookie: { domain:'http://localhost:8080'}
+}));
+
+
+app.use( (req, res, next)=> {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers",
+              "Access-Control-Allow-Methods, Access-Control-Allow-Origin, Origin, Accept, Content-Type"),
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, PATCH");
+    next();
+});
 
 
 if (environment !== 'production') {
@@ -39,7 +57,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.use('/signUp',signUp);
+app.use('/local',signUp);
 app.use('/login',login);
 app.use('/products',products);
 app.use('/cart',cart);

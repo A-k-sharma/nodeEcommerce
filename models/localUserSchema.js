@@ -46,7 +46,7 @@ const userSchema = new Schema({
 })
 
 userSchema.pre('save', function(next){
-    this.password = bcrypt.hashSync(this.password, process.env.SALTING_ROUNDS);
+    this.password = bcrypt.hashSync(this.password, 10);
     next();
 });
 

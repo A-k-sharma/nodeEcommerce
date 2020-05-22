@@ -2,12 +2,14 @@ const product = require('../models/productSchema');
 
 module.exports={
     allProducts: async (req,res)=>{
+        console.log(req.query);
         let query = {};
-        if(Object.keys(req.body).length){
-            query = req.body.query;
+        if(Object.keys(req.query).length){
+            query = req.query;
         }
         product.find(query)
         .then(response=>{
+            console.log(response);
             res.status(200).send(response);
         })
         .catch(err=>{

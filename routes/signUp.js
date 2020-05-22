@@ -5,6 +5,8 @@ const localStrategy = require('passport-local').Strategy;
 
 
 
-route.post('/',signUpController.localSignup);
+route.post('/signup',signUpController.localSignup);
+
+route.post('/login',signUpController.localLogin);
 
 module.exports = route;
